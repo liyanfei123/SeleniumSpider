@@ -22,12 +22,17 @@ public class LoginModule extends BaseModule {
         super(driver, browserFindElement);
     }
 
+    private HomePage homePage = new HomePage(webDriver, browserFindElement);
+
+    private LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
+
+
     /**
      * 判断用户是否已登陆
      * 如果未登录，则进行登录操作
      */
     public boolean isLogin() {
-        HomePage homePage = new HomePage(webDriver, browserFindElement);
+//        HomePage homePage = new HomePage(webDriver, browserFindElement);
         WebElement loginTip = homePage.loginTip();
         if (loginTip.getText().contains("亲，请登录")) {
             JavaScriptEx.JavaScriptClick(webDriver, loginTip);
@@ -58,7 +63,7 @@ public class LoginModule extends BaseModule {
                     first = false;
                     log.info("[taobao:LoginModule:getLoginQR] start login");
                 }
-                LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
+//                LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
                 WebElement QRCodeButton = loginPage.QRCodeButton();
                 if (QRCodeButton == null) {
                     // 重试一次 获取二维码登陆按钮
@@ -99,7 +104,7 @@ public class LoginModule extends BaseModule {
             getLoginQR();
             int count = 3; // 重试n次
             while (count >= 1) {
-                LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
+//                LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
                 // 截取二维码，并发送给用户邮箱
                 WebElement QRCode = loginPage.QRCode();
 //            try {
@@ -110,8 +115,8 @@ public class LoginModule extends BaseModule {
 //                e.printStackTrace();
 //                throw new SeleniumException(e.getMessage());
 //            }
-                browserFindElement.init(webDriver, 5 * 60, 500);
-                HomePage homePage = new HomePage(webDriver, browserFindElement);
+                browserFindElement.init(webDriver, 5 * 60, 500); // 修改判断等待时间
+//                HomePage homePage = new HomePage(webDriver, browserFindElement);
                 log.info("[taobao:LoginModule:QRlogin] wait user scan QR img in 5*60s");
                 try {
                     WebElement memberNickName = homePage.MemberNickName(); // 通过等待机制，不断轮询，判断当前用户是否登录成功
@@ -157,7 +162,7 @@ public class LoginModule extends BaseModule {
         } else {
             log.info("[taobao:LoginModule:userLogin] start login");
         }
-        LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
+//        LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
         WebElement QRCodeButton = loginPage.QRCodeButton();
         if (QRCodeButton == null) {
             if (needRefresh) {
@@ -201,7 +206,7 @@ public class LoginModule extends BaseModule {
         // 用户扫码登陆
         Long t1 = System.currentTimeMillis();
         browserFindElement.init(webDriver, 5*60, 500);
-        HomePage homePage = new HomePage(webDriver, browserFindElement);
+//        HomePage homePage = new HomePage(webDriver, browserFindElement);
         System.out.println("请在5min内扫码登陆");
         Long t2 = System.currentTimeMillis();
         try {

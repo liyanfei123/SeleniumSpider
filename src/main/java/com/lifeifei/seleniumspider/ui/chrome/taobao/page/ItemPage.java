@@ -61,15 +61,12 @@ public class ItemPage extends BasePage {
             element = browserFindElement.findElementByType(locatorInfo);
             if (element.getText().contains("开售")) {
                 log.info(String.format("当前时间：%s，还未开始购买", System.currentTimeMillis()));
-                System.out.println(String.format("当前时间：%s，还未开始购买", System.currentTimeMillis()));
                 return null;
             } else if (element.getText().contains("卖光了")) {
                 log.info(String.format("当前时间：%s，商品卖光了", System.currentTimeMillis()));
-                System.out.println(String.format("当前时间：%s，商品卖光了", System.currentTimeMillis()));
                 throw new SeleniumException("商品已经卖光了，不再继续抢购");
             } else {
                 log.info(String.format("当前时间：%s，商品可购买了", System.currentTimeMillis()));
-                System.out.println(String.format("当前时间：%s，商品可购买了", System.currentTimeMillis()));
                 return element;
             }
         } catch (Exception e) {
