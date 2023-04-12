@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import com.lifeifei.seleniumspider.ui.core.element.wait.base.WaitI;
 import com.lifeifei.seleniumspider.ui.core.exceptions.SeleniumException;
 
+import java.time.Duration;
 import java.util.List;
 
 /**
@@ -40,7 +41,7 @@ public class BrowserFindElement {
         try {
             this.driver = driver;
             // 全局的等待方式
-            globalWait.setWebDriverWait(this.driver, 5);
+            globalWait.setWebDriverWait(this.driver, 5, 50);
             log.info("[BrowserFindElement:init] init global wait");
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,11 +49,11 @@ public class BrowserFindElement {
         }
     }
 
-    public void init(WebDriver driver, Integer time) {
+    public void init(WebDriver driver, Integer time, Integer sleepTime) {
         try {
             this.driver = driver;
             // 全局的等待方式
-            globalWait.setWebDriverWait(this.driver, time);
+            globalWait.setWebDriverWait(this.driver, time, sleepTime);
             log.info("[BrowserFindElement:init] init global wait");
         } catch (Exception e) {
             e.printStackTrace();

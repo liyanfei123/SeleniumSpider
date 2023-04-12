@@ -1,6 +1,6 @@
 package com.lifeifei.seleniumspider.service.impl;
 
-import com.lifeifei.seleniumspider.service.MaoTaiService;
+import com.lifeifei.seleniumspider.service.TBMaoTaiService;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
@@ -19,15 +19,13 @@ import java.util.HashMap;
 
 @Service
 @Slf4j
-public class MaoTaiServiceImpl implements MaoTaiService {
+public class TBMaoTaiServiceImpl implements TBMaoTaiService {
 
     private static final String tbUrl = "https://www.taobao.com/";
 
 //    private static final String tbItemUrl = "https://chaoshi.detail.tmall.com/item.htm?id=20739895092&skuId=4227830352490";
 
     private BrowserFindElement browserFindElementWith5s = new BrowserFindElement();
-
-    private BrowserFindElement browserFindElementWith60s = new BrowserFindElement();
 
     private WebDriver driver;
 
@@ -64,7 +62,12 @@ public class MaoTaiServiceImpl implements MaoTaiService {
 
             // 判断页面是否存在"亲，请登录"
             // step1. 用户登陆
-            isLogin();
+            LoginModule loginModule = new LoginModule(driver, browserFindElementWith5s);
+            Boolean loginFlag = loginModule.isLogin();
+            if (!loginFlag) {
+                log.error("[taobao:MaoTaiServiceImpl:taoBaoExecute] login fail!!!");
+                throw new SeleniumException("登录失败，请检查原因");
+            }
 
             // step2. 进入商详
             intoDetail();
@@ -72,8 +75,13 @@ public class MaoTaiServiceImpl implements MaoTaiService {
             // step3. 监视是否可购买
             // 若可购买，直接下单
             ItemDetailModule itemDetailModule = new ItemDetailModule(driver, browserFindElementWith5s);
-            itemDetailModule.buyItem();
-            System.out.println("恭喜你，购买成功");
+            Boolean buyFlag = itemDetailModule.buyItem();
+            if (buyFlag) {
+                System.out.println("恭喜你，购买成功");
+                log.info("[taobao:MaoTaiServiceImpl:taoBaoExecute] Congratulation, buy success");
+            } else {
+                log.info("[taobao:MaoTaiServiceImpl:taoBaoExecute] no stock, buy fail");
+            }
             return true;
         } catch (SeleniumException e) {
             e.printStackTrace();
@@ -83,34 +91,11 @@ public class MaoTaiServiceImpl implements MaoTaiService {
         }
     }
 
-    /**
-     * 判断用户是否已登陆
-     */
-    private boolean isLogin() {
-        HomePage homePage = new HomePage(driver, browserFindElementWith5s);
-        WebElement loginTip = homePage.loginTip();
-        if (loginTip.getText().contains("亲，请登录")) {
-            System.out.println("登陆点击开始时间：" + System.currentTimeMillis());
-            JavaScriptEx.JavaScriptClick(driver, loginTip);
-            System.out.println("登陆点击结束时间：" + System.currentTimeMillis());
-            // 用户登陆
-            try {
-                LoginModule loginModule = new LoginModule(driver, browserFindElementWith5s);
-                loginModule.userLogin(true);
-            } catch (Exception e) {
-                log.info("[MaoTaiServiceImpl:isLogin] refresh web, try login again!");
-                driver.navigate().refresh();  // 刷新登陆页
-                System.out.println("登陆失败，请重试！！！");
-                isLogin();
-            }
-        }
-        return true;
-    }
-
 
 
     private void intoDetail() {
-//        isLogin(); // 调试用，直接在这个页面登陆
+//        LoginModule loginModule = new LoginModule(driver, browserFindElementWith5s);
+//        loginModule.isLogin(); // 调试用，直接在这个页面登陆
         ItemDetailModule itemDetailModule = new ItemDetailModule(driver, browserFindElementWith5s);
         String expectItem = "飞天53%vol 500ml贵州茅台酒（带杯）白酒酒水";
         try {

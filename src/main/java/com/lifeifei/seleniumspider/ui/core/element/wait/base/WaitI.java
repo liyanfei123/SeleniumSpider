@@ -13,7 +13,15 @@ public interface WaitI {
 
    void setTime(Integer time);
 
-   void setIdentity(String identity);
+//   void setIdentity(String identity);
 
    void setWebDriverWait(WebDriver driver, Integer time);
+
+   /**
+    * 指定间隔多少时间判定刷新
+    * @param driver
+    * @param time
+    * @param sleepTime 间隔时间
+    */
+   void setWebDriverWait(WebDriver driver, Integer time, Integer sleepTime);
 }

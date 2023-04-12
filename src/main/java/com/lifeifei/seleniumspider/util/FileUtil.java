@@ -1,4 +1,4 @@
-package com.lifeifei.seleniumspider.ui.util;
+package com.lifeifei.seleniumspider.util;
 
 import org.apache.commons.io.FileUtils;
 

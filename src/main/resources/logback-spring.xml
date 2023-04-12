@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeroid="60 seconds">
-    <property name="log.path" value="/Users/liyanfei/MyCode/SeleniumSpider/logs"/>
-    <!--<property name="log.path" value="/Users/liyanfei01/Desktop/st/Purchase/logs/autoTest"/>-->
+<!--    <property name="log.path" value="/Users/liyanfei/MyCode/SeleniumSpider/logs"/>-->
+    <property name="log.path" value="/Users/liyanfei01/Desktop/st/SeleniumSpider/logs"/>
     <property name="log.level" value="INFO"/>
     <property name="log.maxSize" value="500MB"/>
     <property name="log.pattern"

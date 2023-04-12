@@ -1,11 +1,11 @@
-package com.lifeifei.seleniumspider.taobao;
+package com.lifeifei.seleniumspider.controller.taobao;
 
+import com.lifeifei.seleniumspider.service.TBMaoTaiService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.lifeifei.seleniumspider.service.MaoTaiService;
 
 @Slf4j
 @RestController
@@ -13,10 +13,10 @@ import com.lifeifei.seleniumspider.service.MaoTaiService;
 public class MaoTaiController {
 
     @Autowired
-    private MaoTaiService maoTaiService;
+    private TBMaoTaiService tbMaoTaiService;
 
     @GetMapping("/execute")
     public void execute() {
-        maoTaiService.taoBaoExecute();
+        tbMaoTaiService.taoBaoExecute();
     }
 }

@@ -1,4 +1,4 @@
-package com.lifeifei.seleniumspider.ui.util;
+package com.lifeifei.seleniumspider.util;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

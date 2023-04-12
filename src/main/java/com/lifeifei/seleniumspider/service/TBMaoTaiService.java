@@ -1,6 +1,9 @@
 package com.lifeifei.seleniumspider.service;
 
-public interface MaoTaiService {
+/**
+ * 淘宝
+ */
+public interface TBMaoTaiService {
 
     Boolean taoBaoExecute();
 

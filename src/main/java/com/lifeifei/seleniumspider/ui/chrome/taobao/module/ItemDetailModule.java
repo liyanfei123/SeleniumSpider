@@ -48,7 +48,7 @@ public class ItemDetailModule extends BaseModule {
                 throw new SeleniumException("未进入正确的商详页！！！");
             }
         } catch (SeleniumException e) {
-            e.printStackTrace();
+            log.error("[taobao:ItemDetailModule:intoItemDetail] into item detail fail, reason = {}", e.getStackTrace());
             throw new SeleniumException(e.getMessage());
         }
     }
@@ -56,7 +56,7 @@ public class ItemDetailModule extends BaseModule {
     /**
      * 购买商品
      */
-    public WebElement buyItem() {
+    public Boolean buyItem() {
         try {
             ItemPage itemPage = new ItemPage(webDriver, browserFindElement);
             WebElement buyButton = null;
@@ -66,7 +66,7 @@ public class ItemDetailModule extends BaseModule {
                 } catch (SeleniumException e) {
                     throw new SeleniumException(e.getMessage());
                 }
-                if (buyButton != null) {
+                if (buyButton != null) { // 当前可购买
                     break;
                 } else {
                     // 不可购买刷新当前页面
@@ -82,7 +82,10 @@ public class ItemDetailModule extends BaseModule {
             WindowModule.switchWindowWithTitle(webDriver, "确认订单", 200); // 切换到商详窗口
             WebElement submitButton = orderPage.submit();
             JavaScriptEx.JavaScriptClick(webDriver, submitButton);
-            return buyButton;
+            if (webDriver.getPageSource().contains("库存")) {
+                return false;
+            }
+            return true;
         } catch (SeleniumException e) {
             e.printStackTrace();
             throw new SeleniumException("");

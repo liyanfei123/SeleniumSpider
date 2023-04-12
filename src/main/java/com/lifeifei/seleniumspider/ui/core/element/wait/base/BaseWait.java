@@ -22,11 +22,15 @@ public class BaseWait {
     public BaseWait() {}
 
     public BaseWait(WebDriver driver) {
-        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(5), Duration.ofMillis(100));
+        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(5));
     }
 
     public BaseWait(WebDriver driver, Integer time) {
-        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(time), Duration.ofMillis(100));
+        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(time));
+    }
+
+    public BaseWait(WebDriver driver, Integer time, Integer sleepTime) {
+        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(time), Duration.ofMillis(sleepTime));
     }
 
     public void setDriver(WebDriver driver) {
@@ -47,6 +51,15 @@ public class BaseWait {
             this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(time));
             return;
         }
-        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(0));
+        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(1));
+    }
+
+    public void setWebDriverWait(WebDriver driver, Integer time, Integer sleepTime) {
+        setWebDriver(driver);
+        if (time != null && time > 0) {
+            this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(time), Duration.ofMillis(sleepTime));
+            return;
+        }
+        this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(1));
     }
 }
