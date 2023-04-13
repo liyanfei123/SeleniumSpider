@@ -17,6 +17,6 @@ public class JDController {
 
     @GetMapping("/execute")
     public void execute() {
-        jdMaoTaiService.JDExecute();
+        jdMaoTaiService.execute();
     }
 }

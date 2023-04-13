@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class JDMaoTaiServiceImpl implements JDMaoTaiService {
     @Override
-    public Boolean JDExecute() {
+    public Boolean execute() {
         return null;
     }
 }

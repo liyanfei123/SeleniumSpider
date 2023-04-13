@@ -56,7 +56,7 @@ public class TBMaoTaiServiceImpl implements TBMaoTaiService {
     }
 
     @Override
-    public Boolean taoBaoExecute() {
+    public Boolean execute() {
         try {
             taoBaoInit();
 
@@ -87,7 +87,7 @@ public class TBMaoTaiServiceImpl implements TBMaoTaiService {
             e.printStackTrace();
             throw new SeleniumException(e.getMessage());
         } finally {
-            driver.quit();
+//            driver.quit();
         }
     }
 

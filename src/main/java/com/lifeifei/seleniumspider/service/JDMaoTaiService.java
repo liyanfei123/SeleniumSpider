@@ -12,6 +12,6 @@ public interface JDMaoTaiService {
      * 对于登录的二维码，前十分钟通过邮箱发送给用户
      * @return
      */
-    Boolean JDExecute();
+    Boolean execute();
 
 }
