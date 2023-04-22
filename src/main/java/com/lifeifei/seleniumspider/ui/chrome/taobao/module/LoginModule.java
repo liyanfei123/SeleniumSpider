@@ -1,12 +1,13 @@
 package com.lifeifei.seleniumspider.ui.chrome.taobao.module;
 
-import com.lifeifei.seleniumspider.ui.chrome.taobao.page.LoginPage;
+import com.lifeifei.seleniumspider.ui.chrome.BaseModule;
+import com.lifeifei.seleniumspider.ui.chrome.taobao.page.web.LoginPage;
 import com.lifeifei.seleniumspider.ui.core.element.JavaScriptEx;
 import com.lifeifei.seleniumspider.ui.core.element.find.BrowserFindElement;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import com.lifeifei.seleniumspider.ui.chrome.taobao.page.HomePage;
+import com.lifeifei.seleniumspider.ui.chrome.taobao.page.web.HomePage;
 import com.lifeifei.seleniumspider.ui.core.exceptions.SeleniumException;
 
 /**
@@ -22,6 +23,8 @@ public class LoginModule extends BaseModule {
         super(driver, browserFindElement);
     }
 
+    // 类初始化执行
+    {}
     private HomePage homePage = new HomePage(webDriver, browserFindElement);
 
     private LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
@@ -115,7 +118,7 @@ public class LoginModule extends BaseModule {
 //                e.printStackTrace();
 //                throw new SeleniumException(e.getMessage());
 //            }
-                browserFindElement.init(webDriver, 5 * 60, 500); // 修改判断等待时间
+                browserFindElement.initWait(webDriver, 5 * 60, 50); // 修改判断等待时间
 //                HomePage homePage = new HomePage(webDriver, browserFindElement);
                 log.info("[taobao:LoginModule:QRlogin] wait user scan QR img in 5*60s");
                 try {
@@ -129,7 +132,7 @@ public class LoginModule extends BaseModule {
                         continue;
                     } else {
                         log.info("[taobao:LoginModule:QRlogin] login success");
-                        browserFindElement.init(webDriver, 5, 500);
+                        browserFindElement.initWait(webDriver, 5, 50);
                         return true;
                     }
                 } catch (SeleniumException e) {
@@ -155,7 +158,7 @@ public class LoginModule extends BaseModule {
      * 若用户登陆失败，需要刷新当前页面，让用户重新登陆
      */
     @Deprecated
-    public Boolean userLogin(Boolean needRefresh) {
+    public Boolean userLoginV1(Boolean needRefresh) {
         // 获取登陆二维码
         if (needRefresh) {
             log.info("[taobao:LoginModule:userLogin] start login again");
@@ -170,7 +173,7 @@ public class LoginModule extends BaseModule {
                 log.info("[taobao:LoginModule:userLogin] refresh login page");
                 System.out.println("刷新登陆页面");
                 webDriver.navigate().refresh();
-                return userLogin(false);
+                return userLoginV1(false);
             } else {
                 // TODO: 2023/4/8 失败截图留档
                 log.error("[taobao:LoginModule:userLogin] login page error");
@@ -205,7 +208,7 @@ public class LoginModule extends BaseModule {
 
         // 用户扫码登陆
         Long t1 = System.currentTimeMillis();
-        browserFindElement.init(webDriver, 5*60, 500);
+        browserFindElement.initWait(webDriver, 5*60, 500);
 //        HomePage homePage = new HomePage(webDriver, browserFindElement);
         System.out.println("请在5min内扫码登陆");
         Long t2 = System.currentTimeMillis();
@@ -214,17 +217,17 @@ public class LoginModule extends BaseModule {
             t2 = System.currentTimeMillis();
             if (memberNickName.getText().contains("你好")) {
                 System.out.println("登陆失败,请重试》》》");
-                userLogin(true);
+                userLoginV1(true);
             } else {
                 System.out.println("恭喜你，登陆成功");
             }
-            browserFindElement.init(webDriver, 5, 500);
+            browserFindElement.initWait(webDriver, 5, 500);
         } catch (SeleniumException e) {
             if (t2 - t1 > 5*60*1000-1) {
                 // 超过5*60s，需进行重试，直至成功
                 // TODO: 2023/4/8 可改成重试n次，若n次未成功则退出
                 // 开启一个新的线程进行时间的监听
-                return userLogin(true);
+                return userLoginV1(true);
             }
         }
         return true;

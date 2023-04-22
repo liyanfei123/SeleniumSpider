@@ -1,17 +1,16 @@
 package com.lifeifei.seleniumspider.service.impl;
 
 import com.lifeifei.seleniumspider.service.TBMaoTaiService;
+import com.lifeifei.seleniumspider.ui.core.config.BrowserConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.lifeifei.seleniumspider.ui.chrome.taobao.module.ItemDetailModule;
 import com.lifeifei.seleniumspider.ui.chrome.taobao.module.LoginModule;
-import com.lifeifei.seleniumspider.ui.chrome.taobao.page.HomePage;
-import com.lifeifei.seleniumspider.ui.core.element.JavaScriptEx;
 import com.lifeifei.seleniumspider.ui.core.element.find.BrowserFindElement;
 import com.lifeifei.seleniumspider.ui.core.exceptions.SeleniumException;
 
@@ -21,9 +20,10 @@ import java.util.HashMap;
 @Slf4j
 public class TBMaoTaiServiceImpl implements TBMaoTaiService {
 
-    private static final String tbUrl = "https://www.taobao.com/";
+    @Autowired
+    private BrowserConfig browserConfig;
 
-//    private static final String tbItemUrl = "https://chaoshi.detail.tmall.com/item.htm?id=20739895092&skuId=4227830352490";
+    private static final String tbUrl = "https://www.taobao.com/";
 
     private BrowserFindElement browserFindElementWith5s = new BrowserFindElement();
 
@@ -33,26 +33,10 @@ public class TBMaoTaiServiceImpl implements TBMaoTaiService {
      * 初始化浏览器
      */
     private void taoBaoInit() {
-
-        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
-        // 优化加载策略
-        ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setPageLoadStrategy(PageLoadStrategy.NORMAL);
-        chromeOptions.addArguments("--disable-gpu");//禁止gpu渲染
-        chromeOptions.addArguments("–-no-sandbox");//关闭沙盒模式
-        chromeOptions.addArguments("--remote-allow-origins=*");
-//
-        HashMap<String, Object> prefs = new HashMap<>();
-        prefs.put("profile.default_content_settings", 2);
-        chromeOptions.setExperimentalOption("prefs", prefs);
-        chromeOptions.addArguments("blink-settings=imagesEnabled=false");//禁用图片
-        chromeOptions.addArguments("--disable-extensions");
-        chromeOptions.addArguments("--disable-images");
-        chromeOptions.addArguments("--disable-css-animations");
-
+        ChromeOptions chromeOptions = browserConfig.ChromeConfig();
         driver = new ChromeDriver(chromeOptions);
         driver.get(tbUrl);
-        browserFindElementWith5s.init(driver);
+        browserFindElementWith5s.initWait(driver, 5, 50);
     }
 
     @Override
@@ -77,7 +61,6 @@ public class TBMaoTaiServiceImpl implements TBMaoTaiService {
             ItemDetailModule itemDetailModule = new ItemDetailModule(driver, browserFindElementWith5s);
             Boolean buyFlag = itemDetailModule.buyItem();
             if (buyFlag) {
-                System.out.println("恭喜你，购买成功");
                 log.info("[taobao:MaoTaiServiceImpl:taoBaoExecute] Congratulation, buy success");
             } else {
                 log.info("[taobao:MaoTaiServiceImpl:taoBaoExecute] no stock, buy fail");
@@ -87,7 +70,7 @@ public class TBMaoTaiServiceImpl implements TBMaoTaiService {
             e.printStackTrace();
             throw new SeleniumException(e.getMessage());
         } finally {
-//            driver.quit();
+            driver.quit();
         }
     }
 

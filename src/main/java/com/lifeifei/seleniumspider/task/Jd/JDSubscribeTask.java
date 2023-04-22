@@ -18,7 +18,7 @@ public class JDSubscribeTask extends ITaskHandler {
 
     @Override
 //    @Async // 开启异步，不用等待上次任务执行完成
-    @Scheduled(cron = "*/1 * * * * ?")
+//    @Scheduled(cron = "*/1 * * * * ?")
     public Result<String> execute() throws Exception {
         log.info("开始预约");
         Thread.sleep(5*1000);

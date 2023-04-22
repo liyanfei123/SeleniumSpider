@@ -1,4 +1,4 @@
-package com.lifeifei.seleniumspider.ui.chrome.taobao.module;
+package com.lifeifei.seleniumspider.ui.chrome;
 
 import com.lifeifei.seleniumspider.ui.core.element.find.BrowserFindElement;
 import org.openqa.selenium.WebDriver;

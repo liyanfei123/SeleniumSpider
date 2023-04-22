@@ -1,5 +1,6 @@
-package com.lifeifei.seleniumspider.ui.chrome.taobao.page;
+package com.lifeifei.seleniumspider.ui.chrome.taobao.page.web;
 
+import com.lifeifei.seleniumspider.ui.chrome.BasePage;
 import com.lifeifei.seleniumspider.ui.core.element.find.LocatorInfo;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;

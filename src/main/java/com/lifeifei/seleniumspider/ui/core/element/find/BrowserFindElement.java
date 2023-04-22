@@ -37,7 +37,7 @@ public class BrowserFindElement {
         this.driver = webDriver;
     }
 
-    public void init(WebDriver driver) {
+    public void initWait(WebDriver driver) {
         try {
             this.driver = driver;
             // 全局的等待方式
@@ -49,7 +49,7 @@ public class BrowserFindElement {
         }
     }
 
-    public void init(WebDriver driver, Integer time, Integer sleepTime) {
+    public void initWait(WebDriver driver, Integer time, Integer sleepTime) {
         try {
             this.driver = driver;
             // 全局的等待方式
@@ -69,9 +69,9 @@ public class BrowserFindElement {
         try {
             By by = FindFormFactory.createBy(locatorInfo.getLocatedType(), express);
             try {
-                System.out.println("判断元素存在时间：" + System.currentTimeMillis());
+//                log.info("判断元素存在时间：" + System.currentTimeMillis());
                 globalWait.wait(by); // 先确保元素存在
-                System.out.println("判断元素结束时间：" + System.currentTimeMillis());
+//                log.info("判断元素结束时间：" + System.currentTimeMillis());
                 elements = driver.findElements(by);
             } catch (Exception e) {
                 return null;
@@ -79,7 +79,7 @@ public class BrowserFindElement {
             if (elements.isEmpty()) {
                 throw new SeleniumException(String.format("无当前控件, %s", express));
             }
-            System.out.println("寻找元素结束时间：" + System.currentTimeMillis());
+//            log.info("寻找元素结束时间：" + System.currentTimeMillis());
             if (locatorInfo.getExpectedTitle() != null && !locatorInfo.getExpectedTitle().trim().equals("")) {
                 for (WebElement element : elements) {
                     Boolean flag = element.isDisplayed();

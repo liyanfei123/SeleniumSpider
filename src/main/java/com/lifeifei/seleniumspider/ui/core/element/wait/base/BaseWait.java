@@ -1,5 +1,6 @@
 package com.lifeifei.seleniumspider.ui.core.element.wait.base;
 
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -11,6 +12,7 @@ import java.time.Duration;
  * @date:2022/10/25 22:30
  * @author: lyf
  */
+@Slf4j
 public class BaseWait {
 
     public WebDriverWait driverWait;
@@ -60,6 +62,7 @@ public class BaseWait {
             this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(time), Duration.ofMillis(sleepTime));
             return;
         }
+        log.info("set webDriver wait with default");
         this.driverWait = new WebDriverWait(driver, Duration.ofSeconds(1));
     }
 }

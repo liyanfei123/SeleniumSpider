@@ -33,7 +33,7 @@ public class ExplicitPresenceWait extends BaseWait implements WaitI {
     @Override
     public void wait(By by, Integer time) throws Exception {
         try {
-            log.info("[ExplicitPresenceWait:wait] wait by by & time, by = {}, time = {}",
+            log.info("[ExplicitPresenceWait:wait] wait by time, by = {}, time = {}",
                     by, time);
             this.driverWait.withTimeout(Duration.ofSeconds(time));
             wait(by);

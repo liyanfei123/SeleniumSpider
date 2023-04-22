@@ -1,5 +1,6 @@
-package com.lifeifei.seleniumspider.ui.chrome.taobao.page;
+package com.lifeifei.seleniumspider.ui.chrome.taobao.page.web;
 
+import com.lifeifei.seleniumspider.ui.chrome.BasePage;
 import com.lifeifei.seleniumspider.ui.core.element.find.BrowserFindElement;
 import com.lifeifei.seleniumspider.ui.core.element.find.LocatorInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +73,60 @@ public class ItemPage extends BasePage {
         } catch (Exception e) {
             e.printStackTrace();
             throw new SeleniumException("未找到 购买按钮");
+        }
+    }
+
+    /**
+     * 获取人机验证验证码
+     * @return
+     */
+    public WebElement verificationCodeIFrame() {
+        try {
+            LocatorInfo locatorInfo = new LocatorInfo();
+            locatorInfo.setExpression("iframe#baxia-dialog-content");
+            locatorInfo.setLocatedType(LocatorTypeEnum.ByCssSelector.getType());
+            locatorInfo.setIndex(0);
+            element = browserFindElement.findElementByType(locatorInfo);
+            return element;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SeleniumException("未找到 人机验证按钮");
+        }
+    }
+
+    /**
+     * 获取滑动按钮
+     * @return
+     */
+    public WebElement verificationButton() {
+        try {
+            LocatorInfo locatorInfo = new LocatorInfo();
+            locatorInfo.setExpression("span.nc_iconfont");
+            locatorInfo.setLocatedType(LocatorTypeEnum.ByCssSelector.getType());
+            locatorInfo.setIndex(0);
+            element = browserFindElement.findElementByType(locatorInfo);
+            return element;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SeleniumException("未找到 滑动按钮");
+        }
+    }
+
+    /**
+     * 获取滑动按钮所在div,用于计算滑动长度
+     * @return
+     */
+    public WebElement verificationButtonDiv() {
+        try {
+            LocatorInfo locatorInfo = new LocatorInfo();
+            locatorInfo.setExpression("span.nc_scale");
+            locatorInfo.setLocatedType(LocatorTypeEnum.ByCssSelector.getType());
+            locatorInfo.setIndex(0);
+            element = browserFindElement.findElementByType(locatorInfo);
+            return element;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new SeleniumException("未找到 滑动按钮");
         }
     }
 

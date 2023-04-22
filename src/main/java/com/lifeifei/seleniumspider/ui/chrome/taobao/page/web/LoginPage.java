@@ -1,6 +1,7 @@
-package com.lifeifei.seleniumspider.ui.chrome.taobao.page;
+package com.lifeifei.seleniumspider.ui.chrome.taobao.page.web;
 
 
+import com.lifeifei.seleniumspider.ui.chrome.BasePage;
 import com.lifeifei.seleniumspider.ui.core.element.find.BrowserFindElement;
 import com.lifeifei.seleniumspider.ui.core.element.find.LocatorInfo;
 import com.lifeifei.seleniumspider.ui.core.enums.LocatorTypeEnum;
@@ -13,7 +14,7 @@ import com.lifeifei.seleniumspider.ui.core.exceptions.SeleniumException;
  * 淘宝登录页
  */
 @Slf4j
-public class LoginPage extends BasePage{
+public class LoginPage extends BasePage {
 
     private WebElement element;
 

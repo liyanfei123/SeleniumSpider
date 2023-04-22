@@ -15,7 +15,7 @@ import java.util.Set;
  * @author: lyf
  */
 @Slf4j
-public class WindowModule {
+public class WindowOperate {
 
     private static String parentWindowHandle;
 
@@ -41,7 +41,7 @@ public class WindowModule {
                     }
                     for (int i = allWindowHandlers.size() - 1; i >= 0; i--) {
                         driver.switchTo().window(allWindowHandlers.get(i));
-                        System.out.println("当前title: " + driver.getTitle());
+                        log.info("now title: {}, expected title: {}", driver.getTitle(), expectTitle);
                         if (driver.getTitle().contains(expectTitle)) {
                             return;
                         }
@@ -54,23 +54,8 @@ public class WindowModule {
             e.printStackTrace();
             throw new SeleniumException("切换窗口失败");
         }
-        System.out.println("切回原来的屏幕");
+        log.info("switch to origin window");
         driver.switchTo().window(parentWindowHandle);
-    }
-
-    public static void test () {
-        try {
-            if (2 == 2) {
-                return;
-            }
-        } catch (Exception e) {
-            throw new SeleniumException("");
-        }
-        System.out.println("test test");
-    }
-    public static void main(String[] args) {
-        WindowModule windowModule = new WindowModule();
-        WindowModule.test();
     }
 
 }

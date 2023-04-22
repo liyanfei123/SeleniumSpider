@@ -24,7 +24,7 @@ public class JDBuyTask extends ITaskHandler {
 
     @Override
     @Async
-    @Scheduled(cron = "*/3 * * * * ?")
+//    @Scheduled(cron = "*/3 * * * * ?")
     public Result<String> execute() throws Exception {
         log.info("开始抢购");
         Thread.sleep(7*1000);
