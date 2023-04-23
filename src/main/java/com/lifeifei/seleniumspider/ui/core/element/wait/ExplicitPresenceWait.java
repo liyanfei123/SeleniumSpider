@@ -25,7 +25,7 @@ public class ExplicitPresenceWait extends BaseWait implements WaitI {
             log.info("[ExplicitPresenceWait:wait] wait by by, by = {}", by);
             this.driverWait.until(ExpectedConditions.presenceOfElementLocated(by));
         } catch (Exception e) {
-            log.error("[ExplicitPresenceWait:wait] wait by by error, reason = {}", e);
+            log.error("[ExplicitPresenceWait:wait] wait by by error, reason = {}", e.getStackTrace());
             throw new SeleniumException("页面元素在页面中存在等待-元素控件未出现");
         }
     }

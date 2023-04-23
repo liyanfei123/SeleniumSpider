@@ -9,10 +9,15 @@ import com.lifeifei.seleniumspider.ui.core.element.JavaScriptEx;
 import com.lifeifei.seleniumspider.ui.core.element.find.BrowserFindElement;
 import com.lifeifei.seleniumspider.ui.core.module.FrameOperate;
 import com.lifeifei.seleniumspider.ui.core.module.WindowOperate;
+import com.lifeifei.seleniumspider.util.DateUtil;
+import com.lifeifei.seleniumspider.util.code.SlidingCode;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import com.lifeifei.seleniumspider.ui.core.exceptions.SeleniumException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Description:
@@ -22,6 +27,10 @@ import com.lifeifei.seleniumspider.ui.core.exceptions.SeleniumException;
  */
 @Slf4j
 public class ItemDetailModule extends BaseModule {
+
+    private final long CAN_BUY_TIME_1 = DateUtil.getAppointTimeStampByHour(10); // 每天20点可购买
+
+    private final long CAN_BUY_TIME_2 = DateUtil.getAppointTimeStampByHour(20); // 每天20点可购买
 
     public ItemDetailModule(WebDriver driver, BrowserFindElement browserFindElement) {
         super(driver, browserFindElement);
@@ -69,25 +78,38 @@ public class ItemDetailModule extends BaseModule {
             if (itemPage == null) {
                 itemPage = new ItemPage(webDriver, browserFindElement);
             }
-            WebElement buyButton = null;
+            browserFindElement.initWait(webDriver, 2, 50);
+            // 避免提前进入导致触发人机验证
+            // 可购买前15s开始刷新
+            Long nowTime = System.currentTimeMillis();
+            while ((CAN_BUY_TIME_1 - nowTime >= 15*1000 && nowTime < CAN_BUY_TIME_1)  // 上午场
+                || (CAN_BUY_TIME_2 - nowTime >= 15*1000 && nowTime > CAN_BUY_TIME_1)) { // 下午场
+                log.info("[ItemDetailModule:buyItem] wait time, avoid robot check");
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    continue;
+                }
+                nowTime = System.currentTimeMillis();
+            }
             // 监视是否可购买
+            WebElement buyButton = null;
             while (true) {
                 try {
-                    try {
-                        buyButton = itemPage.buyButtonCanBuy();
-                    } catch (SeleniumException e) {
-                        // 未找到购买按钮时，判断是否需要进行人机验证，即二维码操作
-                        WebElement codeFrame = itemPage.verificationCodeIFrame();
-                        if (codeFrame != null) {
-                            // 进行人机验证
-
-                            // 验证通过再找一次
-                            buyButton = itemPage.buyButtonCanBuy();
-                        } else {
-                            log.error("[ItemDetailModule:buyItem] buy item error, reason:", e.getStackTrace());
+                    // 先判断是否有出现人机验证
+                    // 判断是否需要进行人机验证，即二维码操作
+                    WebElement codeFrame = itemPage.verificationCodeIFrame(); // 这个判断的时候会超时
+                    if (codeFrame != null) {
+                        // 进行人机验证
+                        log.info("[ItemDetailModule:buyItem] start robot check");
+                        Boolean checkResult = this.robotCheck(codeFrame);
+                        log.info("[ItemDetailModule:buyItem] robot check end");
+                        if (!checkResult) {
+                            log.error("[ItemDetailModule:buyItem] robot check fail");
                             return false;
                         }
                     }
+                    buyButton = itemPage.buyButtonCanBuy();
                     if (buyButton != null) { // 当前可购买
                         break;
                     } else {
@@ -97,6 +119,7 @@ public class ItemDetailModule extends BaseModule {
                     }
                 } catch (SeleniumException e) {
                     log.error("[ItemDetailModule:buyItem] find buy item button error, reason:", e.getStackTrace());
+                    WindowOperate.takeScreenShot(webDriver, "查找购买按钮失败");
                     return false;
                 }
             }
@@ -104,7 +127,7 @@ public class ItemDetailModule extends BaseModule {
 
             // 进入订单提交页
             OrderPage orderPage = new OrderPage(webDriver, browserFindElement);
-            WindowOperate.switchWindowWithTitle(webDriver, "确认订单", 200); // 切换到商详窗口
+            WindowOperate.switchWindowWithTitle(webDriver, "确认订单", 200); // 切换到确认订单窗口
             try {
                 WebElement submitButton = orderPage.submit();
                 JavaScriptEx.JavaScriptClick(webDriver, submitButton);
@@ -113,7 +136,8 @@ public class ItemDetailModule extends BaseModule {
                 }
                 return true;
             } catch (SeleniumException e) {
-                log.error("未找到提交订单按钮");
+                log.error("[ItemDetailModule:buyItem] find submit button error, reason:", e.getStackTrace());
+                WindowOperate.takeScreenShot(webDriver, "查找订单提交按钮失败");
                 return false;
             }
         } catch (SeleniumException e) {
@@ -128,13 +152,39 @@ public class ItemDetailModule extends BaseModule {
     private Boolean robotCheck(WebElement iframe) {
         try {
             FrameOperate.switchAssignIFrame(webDriver, iframe);
+
             WebElement slideButton = itemPage.verificationButton();
             WebElement buttonDiv = itemPage.verificationButtonDiv();
             Integer width = buttonDiv.getSize().getWidth();
-
+            // 计算滑块的运行轨迹，模拟用户先加速，再减速，每次运动多少距离
+            List<Double> traces = new ArrayList<>();
+            int threshold = width * 3/5; // 减速阈值
+            int current = 0;
+            double t = 0.1; // 计算间隔时间
+            double v = 0.0; // 初始速度
+            double a = 0;
+            while (current < width) {
+                if (current < threshold) {
+                    a = 2; // 加速
+                } else {
+                    a = -4; // 减速
+                }
+                // s = v*t+1/2 *a*t^2
+                double tmpV = v;
+                double distance = tmpV*t + 0.5*a*t*t;
+                current += distance;
+                traces.add(distance);
+            }
+            // 补偿超出的情况
+            if (current > width) {
+                double distance = traces.get(traces.size()-1) - (current - width);
+                traces.set(traces.size()-1, distance);
+            }
+            SlidingCode.move(webDriver, slideButton, traces);
 
             FrameOperate.switchDefaultFrame(webDriver);
         } catch (SeleniumException e) {
+            WindowOperate.takeScreenShot(webDriver, "滑块移动失败");
             log.error("[ItemDetailModule:robotCheck] robot check error, reason:", e.getStackTrace());
             return false;
         }

@@ -42,6 +42,23 @@ public class FileUtil {
         }
     }
 
+    public static boolean createDir(String destDirName) {
+        File dir = new File(destDirName);
+        if (dir.exists()) {
+            System.out.println("创建单个目录: " + destDirName + " 失败，目标目录已存在！");
+            return false;
+        }
+
+        // 创建目录
+        if (dir.mkdirs()) {
+            System.out.println("创建目录：" + destDirName + " 成功！");
+            return true;
+        } else {
+            System.out.println("创建目录：" + destDirName + " 失败！");
+            return false;
+        }
+    }
+
 //    public static void main(String[] args) throws Exception {
 //        try {
 //            FileUtil fileUtil = new FileUtil();

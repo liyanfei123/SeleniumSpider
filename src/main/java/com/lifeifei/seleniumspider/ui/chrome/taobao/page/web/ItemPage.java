@@ -89,8 +89,8 @@ public class ItemPage extends BasePage {
             element = browserFindElement.findElementByType(locatorInfo);
             return element;
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new SeleniumException("未找到 人机验证按钮");
+            log.error("[ItemPage:verificationCodeIFrame] get verificationCodeIFrame error, reason = ", e.getStackTrace());
+            return null;
         }
     }
 
@@ -107,7 +107,7 @@ public class ItemPage extends BasePage {
             element = browserFindElement.findElementByType(locatorInfo);
             return element;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[ItemPage:verificationButton] get verificationButton error, reason = ", e.getStackTrace());
             throw new SeleniumException("未找到 滑动按钮");
         }
     }
@@ -125,7 +125,7 @@ public class ItemPage extends BasePage {
             element = browserFindElement.findElementByType(locatorInfo);
             return element;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("[ItemPage:verificationButton] get verificationButtonDiv error, reason = ", e.getStackTrace());
             throw new SeleniumException("未找到 滑动按钮");
         }
     }

@@ -17,7 +17,7 @@ import static org.openqa.selenium.interactions.PointerInput.Kind.MOUSE;
  */
 public class SlidingCode {
 
-    private Actions actions;
+    private static Actions actions;
 
     /**
      * 移动滑块
@@ -25,14 +25,17 @@ public class SlidingCode {
      * @param button
      * @param traces 滑块轨迹，滑块中存在模拟人类操作
      */
-    public void move(WebDriver driver, WebElement button, List<Integer> traces) {
+    public static void move(WebDriver driver, WebElement button, List<Double> traces) {
         // 按下滑块按钮
         actions.clickAndHold(button).perform();
         Iterator iterator = traces.iterator();
         while (iterator.hasNext()) {
             // 位移一次
             int dis = (int) iterator.next();
+            moveWithOutWait(dis, 0);
         }
+        // 释放滑块
+        actions.release().perform();
     }
 
     /**
@@ -42,7 +45,7 @@ public class SlidingCode {
      * @param x x轴方向位移距离
      * @param y y轴方向位移距离
      */
-    private void moveWithOutWait(int x, int y) {
+    private static void moveWithOutWait(int x, int y) {
         PointerInput defaultMouse = new PointerInput(MOUSE, "default mouse");
         actions.tick(defaultMouse.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.pointer(), x, y)).perform();
     }
