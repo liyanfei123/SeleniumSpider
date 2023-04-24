@@ -48,7 +48,6 @@ public class DateUtil {
     }
 
     public static void main(String[] args) {
-        DateUtil.getAppointTimeStampByHour(20);
     }
 
     /**

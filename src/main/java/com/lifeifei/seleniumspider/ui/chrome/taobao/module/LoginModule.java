@@ -4,7 +4,11 @@ import com.lifeifei.seleniumspider.ui.chrome.BaseModule;
 import com.lifeifei.seleniumspider.ui.chrome.taobao.page.web.LoginPage;
 import com.lifeifei.seleniumspider.ui.core.element.JavaScriptEx;
 import com.lifeifei.seleniumspider.ui.core.element.find.BrowserFindElement;
+import com.lifeifei.seleniumspider.util.FileUtil;
+import com.lifeifei.seleniumspider.util.mail.MailUtil;
+import com.lifeifei.seleniumspider.util.mail.Sender;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import com.lifeifei.seleniumspider.ui.chrome.taobao.page.web.HomePage;
@@ -110,20 +114,22 @@ public class LoginModule extends BaseModule {
 //                LoginPage loginPage = new LoginPage(webDriver, browserFindElement);
                 // 截取二维码，并发送给用户邮箱
                 WebElement QRCode = loginPage.QRCode();
-//            try {
-//                String QRpath = "/Users/liyanfei/MyCode/Purchase/Purchase/image/taobao/QR_new.PNG";
-//                FileUtil.savePic(QRCode.getScreenshotAs(OutputType.FILE), QRpath);
+            try {
+                String QRpath = "/Users/liyanfei01/Desktop/st/SeleniumSpider/pic/QR_login.png";
+                FileUtil.savePic(QRCode.getScreenshotAs(OutputType.FILE), QRpath);
+                Sender sender = new Sender("淘宝登录验证码", null, QRpath, null);
+                MailUtil.sendQQPic(sender);
 //                FileUtil.openPic(QRpath);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                throw new SeleniumException(e.getMessage());
-//            }
-                browserFindElement.initWait(webDriver, 5 * 60, 50); // 修改判断等待时间
+            } catch (Exception e) {
+                log.error("[taobao:LoginModule:QRlogin] send mail fail, reason = ", e.getStackTrace());
+                return false;
+            }
+                browserFindElement.initWait(webDriver, 1 * 60, 50); // 修改判断等待时间
 //                HomePage homePage = new HomePage(webDriver, browserFindElement);
                 log.info("[taobao:LoginModule:QRlogin] wait user scan QR img in 5*60s");
                 try {
                     WebElement memberNickName = homePage.MemberNickName(); // 通过等待机制，不断轮询，判断当前用户是否登录成功
-                    if (memberNickName.getText().contains("你好")) {
+                    if (memberNickName != null && memberNickName.getText().contains("你好")) {
                         // 用户登录失败，进行重试
                         log.info("[taobao:LoginModule:QRlogin] login fail, reLogin start");
                         webDriver.navigate().refresh();

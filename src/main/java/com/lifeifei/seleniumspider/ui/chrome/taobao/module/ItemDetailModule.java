@@ -82,8 +82,9 @@ public class ItemDetailModule extends BaseModule {
             // 避免提前进入导致触发人机验证
             // 可购买前15s开始刷新
             Long nowTime = System.currentTimeMillis();
-            while ((CAN_BUY_TIME_1 - nowTime >= 15*1000 && nowTime < CAN_BUY_TIME_1)  // 上午场
-                || (CAN_BUY_TIME_2 - nowTime >= 15*1000 && nowTime > CAN_BUY_TIME_1)) { // 下午场
+            while ((nowTime < CAN_BUY_TIME_1 && CAN_BUY_TIME_1 - nowTime >= 15*1000)  // 上午场
+                    || (nowTime > CAN_BUY_TIME_1 && nowTime < CAN_BUY_TIME_2
+                    && CAN_BUY_TIME_2 - nowTime >= 15*1000)) { // 下午场
                 log.info("[ItemDetailModule:buyItem] wait time, avoid robot check");
                 try {
                     Thread.sleep(500);

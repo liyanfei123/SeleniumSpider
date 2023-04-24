@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lifeifei.seleniumspider.ui.core.element.wait.ExplicitPresenceWait;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import com.lifeifei.seleniumspider.ui.core.element.wait.base.WaitI;
@@ -74,7 +75,8 @@ public class BrowserFindElement {
 //                log.info("判断元素结束时间：" + System.currentTimeMillis());
                 elements = driver.findElements(by);
             } catch (Exception e) {
-                return null;
+                log.error("[BrowserFindElement:findElementByType] find element error, express = ", express);
+                throw new SeleniumException(String.format("未找到当前控件, %s", express));
             }
             if (elements.isEmpty()) {
                 throw new SeleniumException(String.format("无当前控件, %s", express));
